@@ -65,7 +65,7 @@ public class RegisterController extends HttpServlet {
                 request.getRequestDispatcher("/views/customer/register.jsp").forward(request, response);
                 return;
             }
-            int id = userDAO.createCustomerWithPassword(fullName, phone, com.motofix.util.PasswordUtil.hash(password));
+            int id = userDAO.createCustomerWithPassword(fullName, phone, password);
             User user = userDAO.findById(id);
             HttpSession session = request.getSession(true);
             session.setAttribute("user", user);

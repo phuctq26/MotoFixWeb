@@ -25,11 +25,12 @@
         <c:remove var="message" scope="session"/>
       </c:if>
       <%-- Error --%>
-      <c:if test="${not empty error}">
+      <c:if test="${not empty sessionScope.error}">
         <div class="alert alert-danger alert-dismissible fade show">
-          <i class="bi bi-exclamation-triangle me-2"></i>${error}
+          <i class="bi bi-exclamation-triangle me-2"></i>${sessionScope.error}
           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
+        <c:remove var="error" scope="session"/>
       </c:if>
 
       <div class="card p-4">

@@ -9,7 +9,7 @@ import java.util.List;
 public class BookingDAO extends DBContext {
 
     public void create(int customerId, Integer vehicleId, Timestamp bookingDate, String note) throws SQLException {
-        String sql = "INSERT INTO Bookings (CustomerID, VehicleID, BookingDate, Note, Status) VALUES (?, ?, ?, ?, 'PENDING')";
+        String sql = "INSERT INTO Bookings (CustomerID, VehicleID, BookingDate, Status, Note) VALUES (?, ?, ?, 'PENDING', ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, customerId);
             if (vehicleId == null) {
@@ -19,16 +19,17 @@ public class BookingDAO extends DBContext {
             }
             stmt.setTimestamp(3, bookingDate);
             stmt.setString(4, note);
+            System.out.println("INSERT BOOKING: " + customerId + " - " + vehicleId + " - " + bookingDate);
             stmt.executeUpdate();
         }
     }
 
     public List<Booking> listAll() throws SQLException {
-        String sql = "SELECT b.BookingID, u.FullName, u.Phone, v.PlateNumber, b.BookingDate, b.Status, b.Note "
-                + "FROM Bookings b "
-                + "JOIN Users u ON b.CustomerID = u.UserID "
-                + "LEFT JOIN Vehicles v ON b.VehicleID = v.VehicleID "
-                + "ORDER BY b.BookingDate DESC";
+        String sql = "SELECT b.BookingID, a.firstName AS FullName, a.Username AS Phone, v.PlateNumber, b.BookingDate, b.Status, b.Note "
+        + "FROM Bookings b "
+        + "JOIN Accounts a ON b.CustomerID = a.AccountID "
+        + "LEFT JOIN Vehicles v ON b.VehicleID = v.VehicleID "
+        + "ORDER BY b.BookingDate DESC";
         List<Booking> items = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
