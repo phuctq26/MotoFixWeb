@@ -1,0 +1,266 @@
+﻿:root {
+  --bg: #f5f7fb;
+  --nav: #1f2429;
+  --nav-2: #1b2025;
+  --brand: #1976ff;
+  --card: #ffffff;
+  --muted: #7b8794;
+  --text: #1f2a37;
+  --shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
+  --radius: 18px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Manrope", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, var(--nav), var(--nav-2));
+  color: #cbd5e1;
+  padding: 22px 18px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+  margin-bottom: 18px;
+}
+
+.nav-section {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 18px 0 8px;
+  color: #94a3b8;
+}
+
+.nav-link {
+  color: #cbd5e1;
+  border-radius: 12px;
+  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+.nav-link.active,
+.nav-link:hover {
+  background: rgba(25, 118, 255, 0.2);
+  color: #ffffff;
+}
+
+.content {
+  flex: 1;
+  padding: 22px 28px 36px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.topbar .title {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.topbar .user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+}
+
+.card {
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.stat-card { padding: 16px 18px; }
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(25, 118, 255, 0.12);
+  color: var(--brand);
+}
+
+.badge-soft {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-soft.warning { background: #fff7ed; color: #c2410c; }
+.badge-soft.success { background: #ecfdf3; color: #15803d; }
+.badge-soft.info { background: #eef2ff; color: #4338ca; }
+.badge-soft.danger { background: #fee2e2; color: #b91c1c; }
+
+.table thead { background: #f8fafc; }
+
+.search-box {
+  background: #2b2f34;
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #ffffff;
+}
+
+.step-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #7b8794;
+}
+
+.step-pill .circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #e2e8f0;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+}
+
+.step-pill.active { color: var(--brand); }
+.step-pill.active .circle { border-color: var(--brand); color: var(--brand); }
+
+.schedule-item {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+
+.site-footer {
+  margin-top: 28px;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.service-card {
+  padding: 16px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.service-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(25, 118, 255, 0.12);
+  color: var(--brand);
+  display: grid;
+  place-items: center;
+}
+
+.chart-placeholder {
+  height: 220px;
+  background: #f1f5f9;
+  border-radius: 16px;
+}
+
+/* =========================================================
+   RESPONSIVE — Mobile / Tablet
+   ========================================================= */
+
+/* Hamburger button — chỉ hiện trên mobile */
+.sidebar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: var(--text);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  line-height: 1;
+}
+.sidebar-toggle:hover { background: #f1f5f9; }
+
+/* Overlay mờ phủ content khi sidebar mở trên mobile */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1040;
+}
+.sidebar-overlay.show { display: block; }
+
+@media (max-width: 992px) {
+  /* Hiện nút hamburger */
+  .sidebar-toggle { display: inline-flex; align-items: center; }
+
+  /* Sidebar ẩn sang trái, slide-in khi có class .open */
+  .sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+    height: 100vh;
+    width: 260px;
+    z-index: 1050;
+    transition: left 0.25s ease;
+    overflow-y: auto;
+  }
+  .sidebar.open { left: 0; }
+
+  /* Content chiếm toàn bộ chiều rộng */
+  .content { padding: 16px 12px 28px; }
+
+  /* Topbar: rút gọn user info trên mobile nhỏ */
+  .topbar { gap: 8px; }
+}
+
+@media (max-width: 576px) {
+  /* Ẩn tên & vai trò, giữ avatar và logout */
+  .topbar .user > div { display: none; }
+  .topbar .user { gap: 8px; }
+  .content { padding: 12px 10px 24px; }
+
+  /* Ẩn cột ít quan trọng trong bảng Khách hàng */
+  #customersTable th:nth-child(4),
+  #customersTable td:nth-child(4),
+  #customersTable th:nth-child(5),
+  #customersTable td:nth-child(5) { display: none; }
+
+  /* Ẩn cột ít quan trọng trong bảng Nhân sự */
+  #staffTable th:nth-child(4),
+  #staffTable td:nth-child(4),
+  #staffTable th:nth-child(6),
+  #staffTable td:nth-child(6) { display: none; }
+
+  /* Ẩn cột ít quan trọng trong bảng Phụ tùng */
+  #partsTable th:nth-child(3),
+  #partsTable td:nth-child(3) { display: none; }
+}
+

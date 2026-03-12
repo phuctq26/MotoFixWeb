@@ -1,0 +1,46 @@
+﻿<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="activeMenu" value="${requestScope.activeMenu}"/>
+<aside class="sidebar" id="adminSidebar">
+  <div class="brand"><i class="bi bi-speedometer2"></i> MotoFix Admin</div>
+
+  <div class="nav-section">Tổng quan</div>
+  <a class="nav-link ${activeMenu == 'dashboard'     ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/dashboard">
+    <i class="bi bi-grid"></i> Dashboard
+  </a>
+  <a class="nav-link ${activeMenu == 'bookings'      ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/bookings">
+    <i class="bi bi-calendar-check"></i> Yêu cầu đặt lịch
+  </a>
+  <a class="nav-link ${activeMenu == 'consultations' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/consultations">
+    <i class="bi bi-chat-dots"></i> Yêu cầu tư vấn
+  </a>
+
+  <div class="nav-section">Nghiệp vụ</div>
+  <a class="nav-link ${activeMenu == 'reception' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/reception">
+    <i class="bi bi-box-arrow-in-down"></i> Tiếp nhận xe
+  </a>
+  <a class="nav-link ${activeMenu == 'repairs'   ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/repairs">
+    <i class="bi bi-tools"></i> Quản lý sửa chữa
+  </a>
+
+  <div class="nav-section">Tài chính</div>
+  <a class="nav-link ${activeMenu == 'revenue'  ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/revenue">
+    <i class="bi bi-receipt"></i> Hóa đơn &amp; doanh thu
+  </a>
+  <a class="nav-link ${activeMenu == 'invoices' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/invoices">
+    <i class="bi bi-receipt-cutoff"></i> Danh sách hóa đơn
+  </a>
+
+  <div class="nav-section">Quản lý</div>
+  <a class="nav-link ${activeMenu == 'customers' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/customers">
+    <i class="bi bi-people"></i> Khách hàng
+  </a>
+  <a class="nav-link ${activeMenu == 'inventory' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/inventory">
+    <i class="bi bi-box-seam"></i> Kho phụ tùng
+  </a>
+  <a class="nav-link ${activeMenu == 'services'  ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/services">
+    <i class="bi bi-wrench"></i> Dịch vụ
+  </a>
+  <a class="nav-link ${activeMenu == 'staff'     ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/staff">
+    <i class="bi bi-person-badge"></i> Nhân sự (KTV)
+  </a>
+</aside>

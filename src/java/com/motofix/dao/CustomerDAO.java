@@ -36,8 +36,8 @@ public class CustomerDAO extends DBContext {
                 + "FROM Customers c JOIN Accounts a ON c.AccountID = a.AccountID "
                 + "ORDER BY c.CustomerID DESC";
         List<Customer> list = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement st = connection.prepareStatement(sql);
+                ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 list.add(map(rs));
             }
@@ -50,9 +50,9 @@ public class CustomerDAO extends DBContext {
                 + "a.Email, a.AvatarUrl, a.IsActive, c.Address "
                 + "FROM Customers c JOIN Accounts a ON c.AccountID = a.AccountID "
                 + "WHERE c.CustomerID = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, customerId);
-            try (ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, customerId);
+            try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     return map(rs);
                 }
@@ -67,9 +67,9 @@ public class CustomerDAO extends DBContext {
                 + "a.Email, a.AvatarUrl, a.IsActive, c.Address "
                 + "FROM Customers c JOIN Accounts a ON c.AccountID = a.AccountID "
                 + "WHERE a.Username = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, username);
-            try (ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, username);
+            try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     return map(rs);
                 }
@@ -93,14 +93,14 @@ public class CustomerDAO extends DBContext {
             int accountId;
             String sqlAcc = "INSERT INTO Accounts (Username, PasswordHash, firstName, lastName, Email, Role) "
                     + "VALUES (?, ?, ?, ?, ?, 'CUSTOMER')";
-            try (PreparedStatement stmt = connection.prepareStatement(sqlAcc, Statement.RETURN_GENERATED_KEYS)) {
-                stmt.setString(1, username);
-                stmt.setString(2, hash);
-                stmt.setString(3, firstName);
-                stmt.setString(4, lastName);
-                stmt.setString(5, email);
-                stmt.executeUpdate();
-                try (ResultSet rs = stmt.getGeneratedKeys()) {
+            try (PreparedStatement st = connection.prepareStatement(sqlAcc, Statement.RETURN_GENERATED_KEYS)) {
+                st.setString(1, username);
+                st.setString(2, hash);
+                st.setString(3, firstName);
+                st.setString(4, lastName);
+                st.setString(5, email);
+                st.executeUpdate();
+                try (ResultSet rs = st.getGeneratedKeys()) {
                     if (!rs.next()) {
                         throw new SQLException("Failed to get AccountID");
                     }
@@ -108,10 +108,10 @@ public class CustomerDAO extends DBContext {
                 }
             }
             String sqlCust = "INSERT INTO Customers (AccountID, Address) VALUES (?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(sqlCust)) {
-                stmt.setInt(1, accountId);
-                stmt.setString(2, address != null ? address : "");
-                stmt.executeUpdate();
+            try (PreparedStatement st = connection.prepareStatement(sqlCust)) {
+                st.setInt(1, accountId);
+                st.setString(2, address != null ? address : "");
+                st.executeUpdate();
             }
             connection.commit();
         } catch (SQLException e) {
@@ -129,19 +129,19 @@ public class CustomerDAO extends DBContext {
         try {
             String sqlAcc = "UPDATE Accounts SET firstName=?, lastName=?, Email=?, IsActive=? "
                     + "WHERE AccountID = (SELECT AccountID FROM Customers WHERE CustomerID=?)";
-            try (PreparedStatement stmt = connection.prepareStatement(sqlAcc)) {
-                stmt.setString(1, firstName);
-                stmt.setString(2, lastName);
-                stmt.setString(3, email);
-                stmt.setBoolean(4, isActive);
-                stmt.setInt(5, customerId);
-                stmt.executeUpdate();
+            try (PreparedStatement st = connection.prepareStatement(sqlAcc)) {
+                st.setString(1, firstName);
+                st.setString(2, lastName);
+                st.setString(3, email);
+                st.setBoolean(4, isActive);
+                st.setInt(5, customerId);
+                st.executeUpdate();
             }
             String sqlCust = "UPDATE Customers SET Address=? WHERE CustomerID=?";
-            try (PreparedStatement stmt = connection.prepareStatement(sqlCust)) {
-                stmt.setString(1, address != null ? address : "");
-                stmt.setInt(2, customerId);
-                stmt.executeUpdate();
+            try (PreparedStatement st = connection.prepareStatement(sqlCust)) {
+                st.setString(1, address != null ? address : "");
+                st.setInt(2, customerId);
+                st.executeUpdate();
             }
             connection.commit();
         } catch (SQLException e) {
@@ -156,9 +156,9 @@ public class CustomerDAO extends DBContext {
     public void deactivate(int customerId) throws SQLException {
         String sql = "UPDATE Accounts SET IsActive=0 "
                 + "WHERE AccountID = (SELECT AccountID FROM Customers WHERE CustomerID=?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, customerId);
+            st.executeUpdate();
         }
     }
 
@@ -166,9 +166,9 @@ public class CustomerDAO extends DBContext {
     public void activate(int customerId) throws SQLException {
         String sql = "UPDATE Accounts SET IsActive=1 "
                 + "WHERE AccountID = (SELECT AccountID FROM Customers WHERE CustomerID=?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, customerId);
+            st.executeUpdate();
         }
     }
 }
