@@ -1,8 +1,6 @@
 package com.motofix.model;
 
-/**
- * Maps to the Parts table in MotoFixDBNew.
- */
+
 public class Part {
     private int partId;
     private String partName;

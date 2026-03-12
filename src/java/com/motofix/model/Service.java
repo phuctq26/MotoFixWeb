@@ -1,8 +1,6 @@
 package com.motofix.model;
 
-/**
- * Maps to the Services table in MotoFixDBNew.
- */
+
 public class Service {
     private int serviceId;
     private String serviceName;

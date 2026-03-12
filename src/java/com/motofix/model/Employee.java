@@ -1,18 +1,13 @@
 package com.motofix.model;
 
-/**
- * Maps to the Employees table in MotoFixDBNew.
- * NOTE: Run once → ALTER TABLE Employees ADD FullName NVARCHAR(100), Phone
- * VARCHAR(20);
- */
 public class Employee {
     private int employeeId;
-    private String fullName; // requires ALTER TABLE (see above)
-    private String phone; // requires ALTER TABLE (see above)
+    private String fullName; 
+    private String phone; 
     private String position;
     private long salary;
-    private String hireDate; // yyyy-MM-dd
-    private boolean status = true; // maps to Status BIT column
+    private String hireDate; 
+    private boolean status = true; 
 
     public int getEmployeeId() {
         return employeeId;
@@ -62,7 +57,6 @@ public class Employee {
         this.hireDate = v;
     }
 
-    /** Status BIT: true = đang làm, false = đã nghỉ */
     public boolean isActive() {
         return status;
     }

@@ -2,7 +2,6 @@ package com.motofix.dao;
 
 import com.motofix.controller.DBContext;
 import com.motofix.model.Customer;
-import com.motofix.util.PasswordUtil;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,8 +85,8 @@ public class CustomerDAO extends DBContext {
     public void create(String username, String firstName, String lastName,
             String email, String password, String address) throws SQLException {
         String hash = (password != null && !password.isEmpty())
-                ? PasswordUtil.hash(password)
-                : PasswordUtil.hash("123");
+                ? password
+                : "123";
 
         connection.setAutoCommit(false);
         try {

@@ -1,10 +1,6 @@
 package com.motofix.model;
 
-/**
- * Flat join model: Accounts (accountId, username, firstName, lastName, email,
- * avatarUrl, isActive)
- * + Customers (customerId, address)
- */
+
 public class Customer {
     private int customerId;
     private int accountId;
@@ -16,7 +12,6 @@ public class Customer {
     private String avatarUrl;
     private boolean isActive = true;
 
-    /** Returns "Họ Tên" (lastName + " " + firstName) */
     public String getFullName() {
         String l = lastName != null ? lastName.trim() : "";
         String f = firstName != null ? firstName.trim() : "";

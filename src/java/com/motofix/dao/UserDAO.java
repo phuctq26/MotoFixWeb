@@ -62,7 +62,7 @@ public class UserDAO extends DBContext {
 
         stmt.setString(1, phone); // Username = phone
         stmt.setString(2, fullName);
-        stmt.setString(3, com.motofix.util.PasswordUtil.hash(phone));
+        stmt.setString(3, phone); // Password mặc định = phone (plaintext)
 
         stmt.executeUpdate();
 
@@ -116,35 +116,14 @@ public class UserDAO extends DBContext {
 
     public User authenticate(String username, String password) throws SQLException {
         String sql = "SELECT AccountID, Username, firstName, lastName, PasswordHash, Role, Email, IsActive "
-                + "FROM Accounts WHERE Username = ?";
+                + "FROM Accounts WHERE Username = ? AND PasswordHash = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
+            stmt.setString(2, password);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    String storedHash = rs.getString("PasswordHash");
-                    String inputHash = com.motofix.util.PasswordUtil.hash(password);
-
-                    boolean valid = false;
-                    if (storedHash.equals(inputHash)) {
-                        valid = true;
-                    }
-                    // Legacy plain text check (Auto-migrate to SHA-256)
-                    else if (storedHash.equals(password)) {
-                        String updateSql = "UPDATE Accounts SET PasswordHash = ? WHERE AccountID = ?";
-                        try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
-                            updateStmt.setString(1, inputHash);
-                            updateStmt.setInt(2, rs.getInt("AccountID"));
-                            updateStmt.executeUpdate();
-                        }
-                        valid = true;
-                        storedHash = inputHash;
-                    }
-
-                    if (valid) {
-                        User user = mapAccount(rs);
-                        user.setPasswordHash(storedHash);
-                        return user;
-                    }
+                    User user = mapAccount(rs);
+                    return user;
                 }
             }
         }
