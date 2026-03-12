@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <!doctype html>
@@ -340,9 +340,8 @@
           </table>
         </div>
 
-        <div class="d-flex gap-3 text-muted small mt-2">
-          <span>Tổng: <strong>${fn:length(customers)}</strong> khách hàng</span>
-        </div>
+        <div class="text-muted small mt-3" id="pgInfo">Tổng: <strong>${fn:length(customers)}</strong> khách hàng</div>
+        <nav class="mt-2" id="pgNav"></nav>
       </div>
 
       <%@ include file="_footer.jspf" %>
@@ -360,21 +359,73 @@
   </style>
   <script>
     let currentFilter = 'all';
+    let currentPage   = 1;
+    let pageSize      = 10;
+
+    /* ── bộ lọc ────────────────────────────────────── */
     function setFilter(f) {
       currentFilter = f;
-      ['btnAll','btnActive','btnInactive'].forEach(id => document.getElementById(id).classList.remove('active'));
-      document.getElementById(f === 'all' ? 'btnAll' : f === 'active' ? 'btnActive' : 'btnInactive').classList.add('active');
-      applyFilter();
+      ['btnAll','btnActive','btnInactive'].forEach(id =>
+        document.getElementById(id).classList.remove('active'));
+      document.getElementById(
+        f === 'all' ? 'btnAll' : f === 'active' ? 'btnActive' : 'btnInactive'
+      ).classList.add('active');
+      currentPage = 1;
+      applyAll();
     }
-    function filterTable() { applyFilter(); }
-    function applyFilter() {
+    function filterTable() { currentPage = 1; applyAll(); }
+
+    /* ── logic chính ────────────────────────────────── */
+    function applyAll() {
       const q = document.getElementById('searchInput').value.toLowerCase();
-      document.querySelectorAll('.customer-row').forEach(row => {
+      const rows = Array.from(document.querySelectorAll('.customer-row'));
+
+      // 1. đánh dấu visible/hidden theo search + filter
+      rows.forEach(row => {
         const matchText   = row.textContent.toLowerCase().includes(q);
         const matchStatus = currentFilter === 'all' || row.dataset.status === currentFilter;
-        row.style.display = (matchText && matchStatus) ? '' : 'none';
+        row.dataset.visible = (matchText && matchStatus) ? '1' : '0';
+        row.style.display = 'none';
       });
+
+      // 2. lấy danh sách visible
+      const visible = rows.filter(r => r.dataset.visible === '1');
+      const total   = visible.length;
+      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+      currentPage = Math.min(currentPage, totalPages);
+
+      // 3. hiển thị trang hiện tại
+      const from = (currentPage - 1) * pageSize;
+      visible.forEach((row, idx) => {
+        if (idx >= from && idx < from + pageSize) row.style.display = '';
+      });
+
+      // 4. cập nhật info + pagination UI
+      const to = Math.min(from + pageSize, total);
+      document.getElementById('pgInfo').innerHTML =
+        'Hiển thị <strong>' + (total === 0 ? 0 : from + 1) + '\u2013' + to + '<\/strong> / <strong>' + total + '<\/strong> khách hàng';
+      renderPagination(totalPages);
     }
+
+    function renderPagination(totalPages) {
+      const nav = document.getElementById('pgNav');
+      if (totalPages <= 1) { nav.innerHTML = ''; return; }
+      let html = '<ul class="pagination pagination-sm mb-0">';
+      html += '<li class="page-item ' + (currentPage===1?'disabled':'') + '"><a class="page-link" href="#" onclick="goPage(' + (currentPage-1) + ');return false;">&laquo;<\/a><\/li>';
+      let start = Math.max(1, currentPage - 3);
+      let end   = Math.min(totalPages, start + 6);
+      if (end - start < 6) start = Math.max(1, end - 6);
+      for (let p = start; p <= end; p++) {
+        html += '<li class="page-item ' + (p===currentPage?'active':'') + '"><a class="page-link" href="#" onclick="goPage(' + p + ');return false;">' + p + '<\/a><\/li>';
+      }
+      html += '<li class="page-item ' + (currentPage===totalPages?'disabled':'') + '"><a class="page-link" href="#" onclick="goPage(' + (currentPage+1) + ');return false;">&raquo;<\/a><\/li><\/ul>';
+      nav.innerHTML = html;
+    }
+
+    function goPage(p) { currentPage = p; applyAll(); }
+
+    window.addEventListener('DOMContentLoaded', () => applyAll());
+
     <c:if test="${openModal}">
     document.addEventListener('DOMContentLoaded', function () {
       new bootstrap.Modal(document.getElementById('addCustomerModal')).show();
@@ -383,3 +434,4 @@
   </script>
 </body>
 </html>
+

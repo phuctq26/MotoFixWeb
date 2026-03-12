@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -235,9 +235,8 @@
           </c:choose>
         </div>
 
-        <div class="text-muted small mt-4">
-          Tổng: <strong>${fn:length(services)}</strong> dịch vụ
-        </div>
+        <div class="text-muted small mt-4" id="pgInfo">Tổng: <strong>${fn:length(services)}</strong> dịch vụ</div>
+        <nav class="mt-2" id="pgNav"></nav>
       </div>
 
       <%@ include file="_footer.jspf" %>
@@ -245,12 +244,51 @@
   </div>
 
   <script>
-    function filterCards() {
+    let currentPage = 1;
+    let pageSize    = 10;
+
+    function filterCards() { currentPage = 1; applyAll(); }
+
+    function applyAll() {
       const q = document.getElementById('searchInput').value.toLowerCase();
-      document.querySelectorAll('.service-card-col').forEach(col => {
-        col.style.display = col.textContent.toLowerCase().includes(q) ? '' : 'none';
+      const cols = Array.from(document.querySelectorAll('.service-card-col'));
+
+      cols.forEach(col => {
+        col.dataset.visible = col.textContent.toLowerCase().includes(q) ? '1' : '0';
+        col.style.display = 'none';
       });
+
+      const visible = cols.filter(c => c.dataset.visible === '1');
+      const total   = visible.length;
+      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+      currentPage = Math.min(currentPage, totalPages);
+      const from = (currentPage - 1) * pageSize;
+      visible.forEach((col, idx) => {
+        if (idx >= from && idx < from + pageSize) col.style.display = '';
+      });
+      const to = Math.min(from + pageSize, total);
+      document.getElementById('pgInfo').innerHTML =
+        'Hiển thị <strong>' + (total===0?0:from+1) + '\u2013' + to + '<\/strong> / <strong>' + total + '<\/strong> dịch vụ';
+      renderPagination(totalPages);
     }
+
+    function renderPagination(totalPages) {
+      const nav = document.getElementById('pgNav');
+      if (totalPages <= 1) { nav.innerHTML = ''; return; }
+      let html = '<ul class="pagination pagination-sm mb-0">';
+      html += '<li class="page-item ' + (currentPage===1?'disabled':'') + '"><a class="page-link" href="#" onclick="goPage(' + (currentPage-1) + ');return false;">&laquo;<\/a><\/li>';
+      let start = Math.max(1, currentPage - 3);
+      let end   = Math.min(totalPages, start + 6);
+      if (end - start < 6) start = Math.max(1, end - 6);
+      for (let p = start; p <= end; p++) {
+        html += '<li class="page-item ' + (p===currentPage?'active':'') + '"><a class="page-link" href="#" onclick="goPage(' + p + ');return false;">' + p + '<\/a><\/li>';
+      }
+      html += '<li class="page-item ' + (currentPage===totalPages?'disabled':'') + '"><a class="page-link" href="#" onclick="goPage(' + (currentPage+1) + ');return false;">&raquo;<\/a><\/li><\/ul>';
+      nav.innerHTML = html;
+    }
+
+    function goPage(p) { currentPage = p; applyAll(); }
+    window.addEventListener('DOMContentLoaded', () => applyAll());
   </script>
 </body>
 </html>
